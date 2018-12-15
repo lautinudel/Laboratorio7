@@ -30,7 +30,9 @@ export default class AppBanco extends Component {
 			alert("Error\nComplete todos los campos");
 		}else{
 			if(this.state.condiciones){
-				rtdo="Capital Inicial: "+this.state.capitalInicial+"\nIntereses: "+this.state.intereses+"\nCapital Final: "+this.state.capitalFinal+"\nDias: "+this.state.dias;
+				rtdo="Capital Inicial: "+this.state.capitalInicial+"\nIntereses: "+this.state.intereses+"\nDias: "+this.state.dias;
+				if(this.state.moneda==1) rtdo=rtdo+"\nMoneda: Dolar";
+				else rtdo=rtdo+"\nMoneda: Pesos ARS";
 				this.forceUpdateHandler();
 				ToastAndroid.show('Plazo fijo exitoso', ToastAndroid.LONG);
 			}else{
@@ -60,11 +62,11 @@ export default class AppBanco extends Component {
 	
 	intereses(){
 		this.setState({intereses: (this.state.capitalInicial*( Math.pow(1+this.state.tasa/100,this.state.dias/360)-1)).toFixed(2)});
-		this.setState({capitalFinal: (parseFloat(this.state.capitalInicial)+parseFloat(this.state.intereses)).toFixed(2)});
+		this.setState({capitalFinal:(Number(this.state.capitalInicial) + Number(this.state.intereses))});
 	}
 	
 	actualizarDatos(valor){
-		this.setState({ dias: Math.round(valor)});
+		this.setState({ dias: Math.round(Number(valor))});
 		this.calcularTasa();
 		this.intereses();
 	}
@@ -106,7 +108,7 @@ export default class AppBanco extends Component {
 				height: 35,width:200, borderColor: 'gray', borderWidth: 1
 				}}
 				keyboardType="decimal-pad"
-				onChangeText={(valor) => this.setState({capitalInicial: valor})}>
+				onChangeText={(valor) => this.setState({capitalInicial: Number(valor)})}>
 				</TextInput>
                 <Text>Dias</Text>
                 <Slider
